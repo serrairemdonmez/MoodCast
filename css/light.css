@@ -1,0 +1,51 @@
+/**
+ * MoodCast — Aydınlık Mod
+ * data-theme="light" olduğunda tüm CSS değişkenlerini override eder
+ */
+[data-theme="light"] {
+    --bg:           hsl(240, 20%, 97%);
+    --bg2:          hsl(240, 15%, 100%);
+    --bg3:          hsl(240, 15%, 93%);
+    --border:       hsl(240, 15%, 85%);
+    --border2:      hsl(240, 15%, 75%);
+    --text:         hsl(240, 20%, 12%);
+    --text2:        hsl(240, 12%, 38%);
+    --text3:        hsl(240, 8%, 58%);
+    --accent:       hsl(258, 65%, 50%);
+    --accent-dim:   hsl(258, 55%, 38%);
+    --accent-glow:  hsla(258, 65%, 50%, .18);
+    --accent2:      hsl(28, 85%, 50%);
+}
+[data-theme="light"] body { background: var(--bg); }
+[data-theme="light"] body::before { opacity: 0.4; }
+[data-theme="light"] .navbar {
+    background: hsla(240, 20%, 98%, .92) !important;
+    border-bottom-color: var(--border);
+}
+[data-theme="light"] .search-card,
+[data-theme="light"] .weather-card,
+[data-theme="light"] .track,
+[data-theme="light"] .clock-wrap {
+    box-shadow: 0 2px 16px hsla(240,15%,50%,.1);
+}
+[data-theme="light"] .search-input,
+[data-theme="light"] .form-control {
+    background: hsl(240,20%,98%) !important;
+    color: var(--text) !important;
+}
+[data-theme="light"] .modal-content {
+    background: hsl(240,20%,99%) !important;
+    color: var(--text) !important;
+}
+[data-theme="light"] .player {
+    background: hsla(240,20%,96%,.95);
+    border-top-color: var(--border);
+}
+[data-theme="light"] .player-title,
+[data-theme="light"] .player-artist { color: var(--text); }
+[data-theme="light"] .p-btn { color: var(--text2); }
+[data-theme="light"] .g-badge {
+    background: hsl(258,40%,94%);
+    border-color: hsl(258,40%,80%);
+}
+[data-theme="light"] #weather-canvas { opacity: 0.35 !important; }

@@ -1,0 +1,73 @@
+<?php
+/**
+ * MoodCast - Veritabanı Konfigürasyonu
+ * Güvenlik: Bu dosya web kökünün DIŞINDA tutulmalıdır.
+ * XAMPP için: C:/xampp/htdocs/moodcast/includes/config.php
+ */
+
+// ─── Hata raporlama (üretimde kapatın) ────────────────────────────────────────
+define('APP_ENV', 'development'); // 'production' olarak değiştirin
+
+if (APP_ENV === 'development') {
+    ini_set('display_errors', 1);
+    error_reporting(E_ALL);
+} else {
+    ini_set('display_errors', 0);
+    error_reporting(0);
+}
+
+// ─── Uygulama sabitleri ────────────────────────────────────────────────────────
+define('APP_NAME',    'MoodCast');
+define('APP_VERSION', '1.0.0');
+define('BASE_URL',    'http://localhost/moodcast');
+
+// ─── OpenWeatherMap API ────────────────────────────────────────────────────────
+// Ücretsiz API anahtarı: https://openweathermap.org/api
+define('OWM_API_KEY',  '4798c92ee3593a7ea70994001097f3c0'); // ← Buraya API anahtarınızı yazın
+define('OWM_BASE_URL', 'https://api.openweathermap.org/data/2.5/weather');
+
+// ─── Veritabanı kimlik bilgileri ──────────────────────────────────────────────
+define('DB_HOST',    'localhost');
+define('DB_NAME',    'moodcast');
+define('DB_USER',    'root');
+define('DB_PASS',    '');          // XAMPP varsayılanı boş; üretimde değiştirin
+define('DB_CHARSET', 'utf8mb4');
+
+// ─── Oturum ayarları ──────────────────────────────────────────────────────────
+define('SESSION_LIFETIME', 3600); // 1 saat
+
+// ─── PDO bağlantı sınıfı ──────────────────────────────────────────────────────
+class Database {
+    private static ?PDO $instance = null;
+
+    /**
+     * Singleton PDO örneği döndürür.
+     * Prepared statement + PDO::ERRMODE_EXCEPTION ile SQL Injection engellenir.
+     */
+    public static function getInstance(): PDO {
+        if (self::$instance === null) {
+            $dsn = sprintf(
+                'mysql:host=%s;dbname=%s;charset=%s',
+                DB_HOST, DB_NAME, DB_CHARSET
+            );
+            $options = [
+                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES   => false, // Gerçek prepared statements
+            ];
+            try {
+                self::$instance = new PDO($dsn, DB_USER, DB_PASS, $options);
+            } catch (PDOException $e) {
+                // Gerçek hatayı loglayın, kullanıcıya vermeyin
+                error_log('DB Bağlantı Hatası: ' . $e->getMessage());
+                http_response_code(500);
+                die(json_encode(['error' => 'Veritabanı bağlantısı kurulamadı.']));
+            }
+        }
+        return self::$instance;
+    }
+
+    // Dışarıdan clone/unserialize engelle
+    private function __clone() {}
+    public function __wakeup(): void { throw new \Exception("Cannot unserialize singleton"); }
+}

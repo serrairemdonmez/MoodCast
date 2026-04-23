@@ -10,9 +10,10 @@ function MC_T(key) {
 const Splash = {
     step: 1,
     init() {
-        // Her ana sayfa açılışında göster
+        // Splash görünürlüğü PHP tarafından kontrol ediliyor
+        // Burada sadece event'leri bağlıyoruz
         const splash = document.getElementById('splash');
-        if (splash) splash.style.display = '';
+        if (!splash || splash.style.display === 'none') return;
 
         document.getElementById('splash-btn-1')?.addEventListener('click', () => this.goTo(2));
         document.getElementById('splash-btn-2')?.addEventListener('click', () => this.goTo(3));
@@ -46,6 +47,7 @@ const Splash = {
         if (!splash) return;
         splash.classList.add('hiding');
         setTimeout(() => { splash.style.display = 'none'; }, 500);
+        document.cookie = 'mc_splash_seen=1;max-age=1800;path=/;samesite=Strict';
     }
 };
 
@@ -601,4 +603,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     console.log('%cMoodCast 🎵','color:#818cf8;font-size:1.3rem;font-weight:900');
+
+    // URL'de city parametresi varsa otomatik ara (profil sayfasından gelinince)
+    const urlParams = new URLSearchParams(window.location.search);
+    const cityParam = urlParams.get('city');
+    if (cityParam) {
+        const input = document.getElementById('city-input');
+        if (input) input.value = cityParam;
+        setTimeout(() => App.search(cityParam), 500);
+        // URL'den parametreyi temizle
+        window.history.replaceState({}, '', 'index.php');
+    }
+
+    // Safari ses sorunu için kullanıcı etkileşimi bekle
+    document.addEventListener('click', () => {
+        if (Player.audio && Player.audio.paused === false) return;
+    }, { once: true });
 });

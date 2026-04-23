@@ -15,6 +15,12 @@ header('X-Frame-Options: SAMEORIGIN');
 
 // Tema: cookie'den oku
 $theme = isset($_COOKIE['mc_theme']) ? ($_COOKIE['mc_theme'] === 'light' ? 'light' : 'dark') : 'dark';
+
+// Splash kontrolü — dil değişiminde gösterme
+$showSplash = false;
+if (!isset($_GET['lang'])) {
+    $showSplash = true;
+}
 ?>
 <!DOCTYPE html>
 <html lang="<?= $lang ?>" dir="<?= $dir ?>" data-theme="<?= $theme ?>">
@@ -55,7 +61,7 @@ $theme = isset($_COOKIE['mc_theme']) ? ($_COOKIE['mc_theme'] === 'light' ? 'ligh
 <canvas id="weather-canvas"></canvas>
 
 <!-- ══ SPLASH ═══════════════════════════════════════════════════════════════ -->
-<div id="splash" class="splash-overlay" style="display:none">
+<div id="splash" class="splash-overlay" style="display:<?= $showSplash ? '' : 'none' ?>">
     <button class="splash-skip-btn" id="splash-skip">Geç ×</button>
 
     <div class="splash-slide on" data-s="1">

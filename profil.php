@@ -450,19 +450,21 @@ async function loadFavCities() {
             const name = document.createElement('div'); name.className = 'fav-city-name';
             name.innerHTML = `<i class="bi bi-geo-alt-fill" style="color:var(--accent)"></i>${c.city}`;
             const btns = document.createElement('div'); btns.className = 'fav-city-btns';
-            const searchBtn = document.createElement('button');
-            searchBtn.className = 'fav-city-search'; searchBtn.textContent = '🔍 Ara';
-            searchBtn.addEventListener('click', () => {
-                window.location.href = 'index.php?city=' + encodeURIComponent(c.city);
-            });
             const rmBtn = document.createElement('button');
             rmBtn.className = 'fav-city-remove'; rmBtn.textContent = '× Sil';
-            rmBtn.addEventListener('click', async () => {
+            rmBtn.addEventListener('click', async (e) => {
+                e.stopPropagation();
                 await api('php/fav_cities.php', {action:'remove', city: c.city});
                 toast('Şehir kaldırıldı.','info');
                 loadFavCities(); loadProfile();
             });
-            btns.append(searchBtn, rmBtn);
+            btns.append(rmBtn);
+            // Satıra tıklayınca ara
+            row.addEventListener('click', () => {
+                window.location.href = 'index.php?city=' + encodeURIComponent(c.city);
+            });
+            row.style.cursor = 'pointer';
+            row.title = c.city + ' için ara';
             row.append(name, btns);
             list.append(row);
         });

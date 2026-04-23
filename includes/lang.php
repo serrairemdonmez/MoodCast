@@ -291,6 +291,8 @@ function getLang(): string {
         $_COOKIE['mc_lang'] = $_GET['lang'];
         if (!headers_sent()) {
             setcookie('mc_lang', $_GET['lang'], ['expires' => time() + 365*24*3600, 'path' => '/', 'samesite' => 'Strict', 'httponly' => false]);
+            // Dil değişiminde splash tekrar çıkmasın
+            setcookie('mc_splash_seen', '1', ['expires' => time() + 1800, 'path' => '/', 'samesite' => 'Strict']);
         }
         return $_GET['lang'];
     }
